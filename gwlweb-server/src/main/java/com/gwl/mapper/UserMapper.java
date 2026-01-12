@@ -13,7 +13,6 @@ import com.gwl.pojo.entity.GroupChat;
 import com.gwl.pojo.entity.Message;
 import com.gwl.pojo.entity.User;
 import com.gwl.pojo.vo.GroupChatVO;
-import com.gwl.pojo.vo.GroupMessagesVO;
 import com.gwl.pojo.vo.SearchForUserVO;
 
 @Mapper
@@ -187,14 +186,6 @@ public interface UserMapper {
 
     GroupChat getChatGroupByChatId(Long id);
 
-    /**
-     * 获取群消息
-     * 
-     * @param id
-     * @return
-     */
-    @Select("select id, group_id, sender_id, content, type from group_messages where group_id=#{groupId}")
-    List<GroupMessagesVO> getGroupMessages(Long groupId);
 
     /**
      * 保存群消息

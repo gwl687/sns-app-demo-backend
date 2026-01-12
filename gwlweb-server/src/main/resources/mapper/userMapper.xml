@@ -34,5 +34,4 @@
     test_user u LEFT JOIN friend_relation fr ON fr.user_id = #{userId} AND fr.friend_id = u.id WHERE
     u.id != #{userId} AND ( u.id = #{keyword} OR u.username LIKE CONCAT('%', #{keyword}, '%') ) AND
     (fr.status IS NULL OR fr.status != 1) ORDER BY u.create_time DESC LIMIT 10 </select>
-
 </mapper>

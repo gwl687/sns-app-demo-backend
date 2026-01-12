@@ -57,13 +57,31 @@ public interface FriendMapper {
         void addToChatList(Long myId, Long friendId);
 
         /**
+         * 获取群聊名字
+         * 
+         * @param groupId
+         * @return
+         */
+        @Select("select name from chatgroups where id = #{groupId}")
+        String getGroupName(Long groupId);
+
+        /**
          * 获取群聊成员
          * 
          * @param groupId
          * @return
          */
+        @Select("select user_id from group_members where group_id = #{groupId}")
+        List<Long> getGroupMembers(Long groupId);
+
+        /**
+         * 获取群聊成员名字列表(改群名用)
+         * 
+         * @param groupId
+         * @return
+         */
         @Select("select username from test_user tu join group_members gm on tu.id = gm.user_id where gm.group_id = #{groupId}")
-        List<String> getMemberNames(Long groupId);
+        List<String> getGroupMemberNames(Long groupId);
 
         /**
          * 改群名
@@ -74,5 +92,11 @@ public interface FriendMapper {
         @Update("update chatgroups set name = #{newName} where id = #{groupId}")
         void changeGroupName(Long groupId, String newName);
 
+        /**
+         * 获取推荐好友
+         * 
+         * @param myId
+         * @return
+         */
         List<Long> getRecommendedFriendIds(Long myId);
 }

@@ -29,7 +29,14 @@ public interface ChatMessageMapper {
      */
     List<PrivateMessageVO> getPrivateMessages(Long myId);
 
-     /**
+    /**
+     * 发送群聊消息
+     * 
+     * @param sendPrivateMessageDTO
+     */
+    void sendGroupMessage(Long myId, Long groupId, String context);
+
+    /**
      * 获取聊天列表里的全部群聊消息
      * 
      * @return

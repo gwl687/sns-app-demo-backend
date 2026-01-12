@@ -26,7 +26,8 @@
                 status = 1;
         </if>
     </update>
-
+    
+    <!-- 获取推荐好友 -->
     <select id="getRecommendedFriendIds">
         SELECT
         ui2.user_id AS targetUserId
@@ -56,4 +57,6 @@
         ORDER BY COUNT(*) / SQRT(uic1.cnt * uic2.cnt) DESC
         LIMIT 100;
     </select>
+
+    
 </mapper>

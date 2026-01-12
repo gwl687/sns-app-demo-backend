@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import com.gwl.infrastructure.Manager.ChannelManager;
 import com.gwl.mapper.ChatMessageMapper;
+import com.gwl.mapper.FriendMapper;
 import com.gwl.mapper.UserMapper;
 import com.gwl.pojo.entity.Message;
 import com.gwl.pojo.entity.User;
@@ -26,6 +27,8 @@ public class ChatHandler extends SimpleChannelInboundHandler<Message> {
     AttributeKey<Long> USER_ID = AttributeKey.valueOf("userId");
     @Autowired
     private UserMapper userMapper;
+    @Autowired
+    private FriendMapper friendMapper;
     @Autowired
     private UserService userService;
     @Autowired
@@ -60,12 +63,22 @@ public class ChatHandler extends SimpleChannelInboundHandler<Message> {
                 chatMessageMapper.updateLastMessageTime(fromUser, toUser);
                 // FCMpush
                 User user = userService.getUserInfoById(fromUser);
-                
                 commonService.sendPush(toUser, fromUser, user.getUsername(), content, "privatemessage", false);
                 break;
             // 群聊
             case "group":
-
+                log.info("收到群聊消息: " + msg.getContent());
+                // 存数据库
+                chatMessageMapper.sendGroupMessage(fromUser, toUser, content);
+                chatMessageMapper.updateLastMessageTime(fromUser, toUser);
+                // FCMpush
+                List<Long> groupMemberIds = friendMapper.getGroupMembers(toUser);
+                String groupName = friendMapper.getGroupName(toUser);
+                for (Long groupMemberId : groupMemberIds) {
+                    commonService.sendPush(groupMemberId, fromUser, groupName, fromUser + ": " + content,
+                            "groupmessage",
+                            false);
+                }
                 break;
             // 视频聊天请求
             case "videochatrequest":

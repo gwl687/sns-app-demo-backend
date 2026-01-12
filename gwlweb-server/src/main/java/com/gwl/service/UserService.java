@@ -16,7 +16,7 @@ import com.gwl.pojo.entity.Message;
 import com.gwl.pojo.entity.UpdateUserInfoPushEvent;
 import com.gwl.pojo.entity.User;
 import com.gwl.pojo.vo.GroupChatVO;
-import com.gwl.pojo.vo.GroupMessagesVO;
+import com.gwl.pojo.vo.GroupMessageVo;
 import com.gwl.pojo.vo.SearchForUserVO;
 import com.gwl.pojo.vo.UserLoginVO;
 
@@ -110,13 +110,6 @@ public interface UserService {
    */
   GroupChat getGroupChat(Long GroupId);
 
-  /**
-   * 获取群消息
-   * 
-   * @param groupId
-   * @return
-   */
-  List<GroupMessagesVO> getGroupMessages(Long groupId);
 
   /**
    * 存储群消息

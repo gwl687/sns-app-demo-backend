@@ -16,9 +16,9 @@
         chatlist cl on cl.friend_id = case when cm.sender_id = #{myId} then cm.receiver_id else
         cm.sender_id end where cl.user_id = #{myId} and cl.isgroup = 0 and (cm.sender_id = #{myId}
         or cm.receiver_id = #{myId}) </select>
-    <!-- 获取私聊消息 -->
+    <!-- 获取群聊消息 -->
     <select id="getGroupMessages"
         parameterType="long"
-        resultType="com.gwl.pojo.vo.GroupMessageVO"> select gm.* from group_messages gm join
+        resultType="com.gwl.pojo.vo.GroupMessageVo"> select gm.* from group_messages gm join
         chatlist cl on gm.group_id = cl.friend_id and cl.isgroup= 1 where cl.user_id = #{myId}; </select>
 </mapper>

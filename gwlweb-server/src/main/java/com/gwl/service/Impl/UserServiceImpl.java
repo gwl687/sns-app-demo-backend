@@ -9,7 +9,6 @@ import java.util.Random;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
-
 import org.checkerframework.checker.units.qual.t;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -21,7 +20,6 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
 import com.google.api.client.http.javanet.NetHttpTransport;
@@ -49,7 +47,6 @@ import com.gwl.pojo.entity.TimelinePushEvent;
 import com.gwl.pojo.entity.UpdateUserInfoPushEvent;
 import com.gwl.pojo.entity.User;
 import com.gwl.pojo.vo.GroupChatVO;
-import com.gwl.pojo.vo.GroupMessagesVO;
 import com.gwl.pojo.vo.SearchForUserVO;
 import com.gwl.pojo.vo.UserLoginVO;
 import com.gwl.properties.MailProperties;
@@ -233,7 +230,7 @@ public class UserServiceImpl implements UserService {
         // 改和自己相关的群名
         List<Long> myGroupIds = userMapper.getMyGroupIds(BaseContext.getCurrentId());
         for (Long myGroupId : myGroupIds) {
-            List<String> memberNames = friendMapper.getMemberNames(myGroupId);
+            List<String> memberNames = friendMapper.getGroupMemberNames(myGroupId);
             String newGroupName = String.join(",", memberNames);
             friendMapper.changeGroupName(myGroupId, newGroupName);
         }
@@ -415,15 +412,6 @@ public class UserServiceImpl implements UserService {
         // System.out.println("群成员id为: " + id);
         // }
         return groupChat;
-    }
-
-    /**
-     * 获取群消息
-     */
-    @Override
-    public List<GroupMessagesVO> getGroupMessages(Long groupId) {
-        List<GroupMessagesVO> groupMessagesVOs = userMapper.getGroupMessages(groupId);
-        return groupMessagesVOs;
     }
 
     /**
