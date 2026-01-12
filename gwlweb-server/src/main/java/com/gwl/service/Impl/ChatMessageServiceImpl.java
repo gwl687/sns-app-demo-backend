@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import com.gwl.context.BaseContext;
 import com.gwl.mapper.ChatMessageMapper;
 import com.gwl.pojo.dto.SendPrivateMessageDTO;
+import com.gwl.pojo.vo.GroupMessageVo;
 import com.gwl.pojo.vo.PrivateMessageVO;
 import com.gwl.service.ChatMessageService;
 
@@ -25,4 +26,12 @@ public class ChatMessageServiceImpl implements ChatMessageService {
         return chatMessageMapper.getPrivateMessages(BaseContext.getCurrentId());
     }
 
+    /**
+     * 获取聊天列表里的全部群聊消息
+     * @return
+     */
+    @Override
+    public List<GroupMessageVo> getGroupMessages() {
+        return chatMessageMapper.getGroupMessages(BaseContext.getCurrentId());
+    }
 }

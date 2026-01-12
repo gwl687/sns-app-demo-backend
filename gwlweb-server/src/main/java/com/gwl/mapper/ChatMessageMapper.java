@@ -2,6 +2,8 @@ package com.gwl.mapper;
 
 import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
+
+import com.gwl.pojo.vo.GroupMessageVo;
 import com.gwl.pojo.vo.PrivateMessageVO;
 
 @Mapper
@@ -26,4 +28,11 @@ public interface ChatMessageMapper {
      * @return
      */
     List<PrivateMessageVO> getPrivateMessages(Long myId);
+
+     /**
+     * 获取聊天列表里的全部群聊消息
+     * 
+     * @return
+     */
+    List<GroupMessageVo> getGroupMessages(Long myId);
 }

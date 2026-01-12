@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.gwl.pojo.dto.SendPrivateMessageDTO;
+import com.gwl.pojo.vo.GroupMessageVo;
 import com.gwl.pojo.vo.PrivateMessageVO;
 import com.gwl.result.Result;
 import com.gwl.service.ChatMessageService;
@@ -32,5 +33,16 @@ public class ChatMessageController {
     @Operation(summary = "获取聊天列表里的全部私聊消息")
     Result<List<PrivateMessageVO>> getPrivateMessages() {
         return Result.success(chatMessageService.getPrivateMessages());
+    }
+
+    /**
+     * 获取聊天列表里的全部群聊消息
+     * 
+     * @return
+     */
+    @GetMapping(path = "/getgroupmessages", produces = "application/json")
+    @Operation(summary = "获取聊天列表里的全部群聊消息")
+    Result<List<GroupMessageVo>> getGroupMessages() {
+        return Result.success(chatMessageService.getGroupMessages());
     }
 }
