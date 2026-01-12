@@ -39,12 +39,12 @@ public class GroupController {
      * @param createGroupChatDTO
      * @return
      */
-    @PostMapping(path = "/addgroupmembers/{groupId}", produces = "application/json")
+    @PostMapping(path = "/addgroupmembers", produces = "application/json")
     @Operation(summary = "添加群成员")
-    Result<Boolean> addGroupMembers(@PathVariable Long groupId,
-            @org.springframework.web.bind.annotation.RequestBody CreateGroupChatDTO createGroupChatDTO) {
+    Result<Boolean> addGroupMembers(
+            @RequestBody CreateGroupChatDTO createGroupChatDTO) {
         log.info("添加群成员：{}", createGroupChatDTO);
-        groupService.addGroupMembers(groupId, createGroupChatDTO);
+        groupService.addGroupMembers(createGroupChatDTO);
         return Result.success(true);
     }
 

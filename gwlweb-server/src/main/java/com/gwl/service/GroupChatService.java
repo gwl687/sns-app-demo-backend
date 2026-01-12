@@ -14,12 +14,12 @@ public interface GroupChatService {
     /*
      * 添加群成员
      */
-    Boolean addGroupMembers(Long groupId, CreateGroupChatDTO createGroupChatDTO);
+    void addGroupMembers(CreateGroupChatDTO createGroupChatDTO);
 
     /*
      * 移除群成员
      */
-    Boolean removeGroupMembers(Long groupId, CreateGroupChatDTO createGroupChatDTO);
+    void removeGroupMembers(CreateGroupChatDTO createGroupChatDTO);
 
     /*
      * 创建视频聊天token

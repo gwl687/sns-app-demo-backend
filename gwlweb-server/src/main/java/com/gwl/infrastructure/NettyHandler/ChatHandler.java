@@ -75,6 +75,9 @@ public class ChatHandler extends SimpleChannelInboundHandler<Message> {
                 List<Long> groupMemberIds = friendMapper.getGroupMembers(toUser);
                 String groupName = friendMapper.getGroupName(toUser);
                 for (Long groupMemberId : groupMemberIds) {
+                    if (groupMemberId == fromUser) {
+                        return;
+                    }
                     commonService.sendPush(groupMemberId, fromUser, groupName, fromUser + ": " + content,
                             "groupmessage",
                             false);

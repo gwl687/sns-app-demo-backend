@@ -236,9 +236,12 @@ public class UserServiceImpl implements UserService {
         }
         // 推送给好友
         List<Long> friendIds = userMapper.getMyFriendIds(BaseContext.getCurrentId());
+        // 也要推给自己
+        friendIds.add(BaseContext.getCurrentId());
         UpdateUserInfoPushEvent event = UpdateUserInfoPushEvent.builder()
                 .fromUser(BaseContext.getCurrentId())
                 .friendIds(friendIds).build();
+        log.info("用户 {} 改名", BaseContext.getCurrentId());
         kafkaTemplate.send(
                 "update_user_info",
                 event);
@@ -272,6 +275,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @KafkaListener(topics = "update_user_info", groupId = "update_user_info_group")
     public void onUpdateUserInfoPush(@Payload UpdateUserInfoPushEvent event) {
+        log.info("kafka收到更新用户信息的推送，开始推送给好友");
         for (Long friendId : event.getFriendIds()) {
             commonService.sendPush(friendId, event.getFromUser(), "", "",
                     "friendinfochange", true);

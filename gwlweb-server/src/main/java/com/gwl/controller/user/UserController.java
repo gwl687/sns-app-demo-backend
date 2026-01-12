@@ -104,6 +104,24 @@ public class UserController {
     }
 
     /**
+     * 获取指定用户信息
+     * 
+     * @return
+     */
+    @GetMapping(path = "getuserinfobyid", produces = "application/json")
+    Result<UserInfoVO> getUserInfoById(@RequestParam Long userId) {
+        User user = userService.getUserInfoById(userId);
+        UserInfoVO userInfoVO = UserInfoVO.builder()
+                .userId(user.getId())
+                .username(user.getUsername())
+                .sex(user.getSex())
+                .avatarurl(user.getAvatarurl())
+                .emailaddress(user.getEmailaddress())
+                .build();
+        return Result.success(userInfoVO);
+    }
+
+    /**
      * 发送验证码
      * 
      * @return
@@ -171,6 +189,7 @@ public class UserController {
 
     /**
      * google login
+     * 
      * @param googleLoginDto
      * @return
      */

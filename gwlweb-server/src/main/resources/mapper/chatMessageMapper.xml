@@ -5,6 +5,9 @@
     <!-- 发送私聊消息 -->
     <insert id="sendPrivateMessage"> insert into chat_messages(receiver_id,sender_id,content)
         values(#{friendId},#{myId},#{context}) </insert>
+    <!-- 发送群聊消息 -->
+    <insert id="sendGroupMessage"> insert into group_messages(group_id,sender_id,content)
+        values(#{groupId},#{myId},#{context}) </insert>
     <!-- 更新聊天列表最新消息时间 -->
     <update id="updateLastMessageTime"> update chatlist set last_message_time = now() where isgroup
         = 0 and ( (user_id = #{myId} and friend_id = #{friendOrGroupId}) or (user_id =

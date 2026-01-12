@@ -35,10 +35,9 @@ public class GroupChatServiceImpl implements GroupChatService {
     ChannelManager channelManager;
     @Autowired
     CommonService commonService;
-
     private static final String API_KEY = "devkey";
     private static final String API_SECRET = "secret";
-    private static final String LIVEKIT_URL = "ws://3.112.54.245:7880";
+    //private static final String LIVEKIT_URL = "ws://3.112.54.245:7880";
 
     /**
      * 创建群聊
@@ -96,60 +95,60 @@ public class GroupChatServiceImpl implements GroupChatService {
      * 添加群成员
      */
     @Override
-    public Boolean addGroupMembers(Long groupId, CreateGroupChatDTO createGroupChatDTO) {
-        GroupChat groupChat = userMapper.getGroupChat(groupId);
+    public void addGroupMembers(CreateGroupChatDTO createGroupChatDTO) {
+        GroupChat groupChat = userMapper.getGroupChat(createGroupChatDTO.getGroupId());
         String groupName = groupChat.getGroupName();
-        try {
-            for (Long userId : createGroupChatDTO.getSelectedFriends()) {
-                userMapper.addGroupMembers(groupId, userId);
-                String friendName = userMapper.getByUserId(userId).getUsername();
-                groupName += ',' + friendName;
-            }
-            userMapper.updateGroupName(groupId, groupName);
-            String memberIdsString = groupChat.getMemberIds();
-            List<Long> memberIds = Arrays.stream(memberIdsString.split(",")).map(Long::parseLong).toList();
-            // 发送更新群名的消息
-            channelManager.sendCommand(BaseContext.getCurrentId(), memberIds, "groupMessageChange");
-            log.info("发送群信息更改的消息(添加群成员)");
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
+        for (Long userId : createGroupChatDTO.getSelectedFriends()) {
+            userMapper.addGroupMembers(createGroupChatDTO.getGroupId(), userId);
+            AddFriendToChatListDTO addFriendToChatListDTO = AddFriendToChatListDTO.builder()
+                            .userId(userId)
+                            .friendId(groupChat.getGroupId())
+                            .isGroup(true)
+                            .build();
+            userMapper.addFriendToChatList(addFriendToChatListDTO);
+            String friendName = userMapper.getByUserId(userId).getUsername();
+            groupName += ',' + friendName;
         }
-        return true;
+        userMapper.updateGroupName(createGroupChatDTO.getGroupId(), groupName);
+        // 更新后再获取一次群聊信息
+        groupChat = userMapper.getGroupChat(createGroupChatDTO.getGroupId());
+        String memberIdsString = groupChat.getMemberIds();
+        List<Long> memberIds = Arrays.stream(memberIdsString.split(",")).map(Long::parseLong).toList();
+        for (Long memberId : memberIds) {
+            // FCM
+            commonService.sendPush(memberId, BaseContext.getCurrentId(), "", "", "joingroup", true);
+        }
+        log.info("添加群成员");
     }
 
     /*
      * 移除群成员
      */
     @Override
-    public Boolean removeGroupMembers(Long groupId, CreateGroupChatDTO createGroupChatDTO) {
+    public void removeGroupMembers(CreateGroupChatDTO createGroupChatDTO) {
         String groupName = "";
-        try {
-            for (Long userId : createGroupChatDTO.getSelectedFriends()) {
-                userMapper.removeGroupMembers(groupId, userId);
-            }
-            GroupChat groupChat = userMapper.getGroupChat(groupId);
-            String memberIdsString = groupChat.getMemberIds();
-            List<Long> memberIds = Arrays.stream(memberIdsString
-                    .split(","))
-                    .map(Long::parseLong)
-                    .toList();
-            for (Long id : memberIds) {
-                if (id == groupChat.getOwnerId()) {
-                    groupName += userMapper.getByUserId(id).getUsername();
-                } else {
-                    groupName += "," + userMapper.getByUserId(id).getUsername();
-                }
-            }
-            userMapper.updateGroupName(groupId, groupName);
-            // 发送更新群名的消息
-            channelManager.sendCommand(BaseContext.getCurrentId(), memberIds, "groupMessageChange");
-            log.info("发送群信息更改的消息(移除群成员)");
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
+        for (Long userId : createGroupChatDTO.getSelectedFriends()) {
+            userMapper.removeGroupMembers(groupId, userId);
         }
-        return true;
+        GroupChat groupChat = userMapper.getGroupChat(groupId);
+        String memberIdsString = groupChat.getMemberIds();
+        List<Long> memberIds = Arrays.stream(memberIdsString
+                .split(","))
+                .map(Long::parseLong)
+                .toList();
+        for (Long id : memberIds) {
+            if (id == groupChat.getOwnerId()) {
+                groupName += userMapper.getByUserId(id).getUsername();
+            } else {
+                groupName += "," + userMapper.getByUserId(id).getUsername();
+            }
+        }
+        userMapper.updateGroupName(groupId, groupName);
+
+        for (Long memberId : memberIds) {
+            // FCM
+            commonService.sendPush(memberId, BaseContext.getCurrentId(), "", "", "joingroup", true);
+        }
     }
 
     /**
