@@ -393,7 +393,7 @@ public class UserServiceImpl implements UserService {
             AddFriendToChatListDTO addFriendToChatListDTO = AddFriendToChatListDTO.builder()
                     .userId(userId)
                     .friendId(groupchat.getGroupId())
-                    .isGroup(true).build();
+                    .isGroup(1).build();
             userMapper.addFriendToChatList(addFriendToChatListDTO);
         }
 

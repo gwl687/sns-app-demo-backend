@@ -55,22 +55,28 @@ public class GroupController {
      * @param createGroupChatDTO
      * @return
      */
-    @PostMapping(path = "/removegroupmembers/{groupId}", produces = "application/json")
+    @PostMapping(path = "/removegroupmembers", produces = "application/json")
     @Operation(summary = "移除群成员")
-    Result<Boolean> removeGroupMembers(@PathVariable Long groupId,
+    Result<Boolean> removeGroupMembers(
             @RequestBody CreateGroupChatDTO createGroupChatDTO) {
         log.info("移除群成员：{}", createGroupChatDTO);
-        groupService.removeGroupMembers(groupId, createGroupChatDTO);
+        groupService.removeGroupMembers(createGroupChatDTO);
         return Result.success(true);
     }
 
+    /**
+     * 获取livekittoken
+     * 
+     * @param groupId
+     * @return
+     */
     @GetMapping(path = "/getlivekittoken/{groupId}", produces = "application/json")
     @Operation(summary = "获取livekittoken")
     Result<String> getLiveKitToken(@PathVariable Long groupId) {
         String token = groupService.createLivekitToken(groupId.toString());
         return Result.success(token);
     }
-    
+
     /**
      * 创建群聊
      * 
@@ -88,43 +94,44 @@ public class GroupController {
     }
 
     // /**
-    //  * 获取群聊信息
-    //  * 
-    //  * @param getGroupChatDTO
-    //  * @return
-    //  */
+    // * 获取群聊信息
+    // *
+    // * @param getGroupChatDTO
+    // * @return
+    // */
     // @GetMapping(path = "/getgroupchat", produces = "application/json")
     // @Operation(summary = "获取群信息")
     // Result<GroupChatVO> getGroupChat(@RequestParam("groupId") Long groupId) {
-    //     GroupChat groupChat = userService.getGroupChat(groupId);
-    //     List<Long> memberIds = Arrays.stream(groupChat.getMemberIds()
-    //             .split(","))
-    //             .filter(s -> !s.isBlank())
-    //             .map(Long::valueOf)
-    //             .toList();
-    //     GroupChatVO groupChatVO = GroupChatVO.builder()
-    //             .groupId(groupChat.getGroupId())
-    //             .memberIds(memberIds)
-    //             .ownerId(groupChat.getOwnerId())
-    //             .groupName(groupChat.getGroupName())
-    //             .avatarUrl("")
-    //             .build();
-    //     return Result.success(groupChatVO);
+    // GroupChat groupChat = userService.getGroupChat(groupId);
+    // List<Long> memberIds = Arrays.stream(groupChat.getMemberIds()
+    // .split(","))
+    // .filter(s -> !s.isBlank())
+    // .map(Long::valueOf)
+    // .toList();
+    // GroupChatVO groupChatVO = GroupChatVO.builder()
+    // .groupId(groupChat.getGroupId())
+    // .memberIds(memberIds)
+    // .ownerId(groupChat.getOwnerId())
+    // .groupName(groupChat.getGroupName())
+    // .avatarUrl("")
+    // .build();
+    // return Result.success(groupChatVO);
     // }
 
     // /**
-    //  * 添加朋友或群到聊天列表
-    //  * 
-    //  * @param addFriendToChatListDTO
-    //  * @return
-    //  */
+    // * 添加朋友或群到聊天列表
+    // *
+    // * @param addFriendToChatListDTO
+    // * @return
+    // */
     // @PostMapping(path = "/addfriendtochatlist", produces = "application/json")
     // @Operation(summary = "添加朋友或群到聊天列表")
     // Result addFriendToChatList(
-    //         @org.springframework.web.bind.annotation.RequestBody AddFriendToChatListDTO addFriendToChatListDTO) {
-    //     log.info("添加朋友或群到聊天列表：{}", addFriendToChatListDTO);
-    //     userService.addFriendToChatList(addFriendToChatListDTO);
-    //     return Result.success();
+    // @org.springframework.web.bind.annotation.RequestBody AddFriendToChatListDTO
+    // addFriendToChatListDTO) {
+    // log.info("添加朋友或群到聊天列表：{}", addFriendToChatListDTO);
+    // userService.addFriendToChatList(addFriendToChatListDTO);
+    // return Result.success();
     // }
 
 }

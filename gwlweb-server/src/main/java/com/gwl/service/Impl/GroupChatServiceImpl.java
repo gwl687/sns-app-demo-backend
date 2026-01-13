@@ -37,7 +37,7 @@ public class GroupChatServiceImpl implements GroupChatService {
     CommonService commonService;
     private static final String API_KEY = "devkey";
     private static final String API_SECRET = "secret";
-    //private static final String LIVEKIT_URL = "ws://3.112.54.245:7880";
+    // private static final String LIVEKIT_URL = "ws://3.112.54.245:7880";
 
     /**
      * 创建群聊
@@ -78,7 +78,7 @@ public class GroupChatServiceImpl implements GroupChatService {
             AddFriendToChatListDTO addFriendToChatListDTO = AddFriendToChatListDTO.builder()
                     .userId(userId)
                     .friendId(groupchat.getGroupId())
-                    .isGroup(true).build();
+                    .isGroup(1).build();
             userMapper.addFriendToChatList(addFriendToChatListDTO);
         }
 
@@ -101,10 +101,10 @@ public class GroupChatServiceImpl implements GroupChatService {
         for (Long userId : createGroupChatDTO.getSelectedFriends()) {
             userMapper.addGroupMembers(createGroupChatDTO.getGroupId(), userId);
             AddFriendToChatListDTO addFriendToChatListDTO = AddFriendToChatListDTO.builder()
-                            .userId(userId)
-                            .friendId(groupChat.getGroupId())
-                            .isGroup(true)
-                            .build();
+                    .userId(userId)
+                    .friendId(groupChat.getGroupId())
+                    .isGroup(1)
+                    .build();
             userMapper.addFriendToChatList(addFriendToChatListDTO);
             String friendName = userMapper.getByUserId(userId).getUsername();
             groupName += ',' + friendName;
@@ -126,28 +126,35 @@ public class GroupChatServiceImpl implements GroupChatService {
      */
     @Override
     public void removeGroupMembers(CreateGroupChatDTO createGroupChatDTO) {
-        String groupName = "";
         for (Long userId : createGroupChatDTO.getSelectedFriends()) {
-            userMapper.removeGroupMembers(groupId, userId);
+            userMapper.removeGroupMembers(createGroupChatDTO.getGroupId(), userId);
+            // 被踢的人从聊天列表里移出群
+            AddFriendToChatListDTO addFriendToChatListDTO = AddFriendToChatListDTO.builder()
+                    .userId(userId)
+                    .friendId(createGroupChatDTO.getGroupId())
+                    .isGroup(1).build();
+            userMapper.removeFriendFromChatList(addFriendToChatListDTO);
         }
-        GroupChat groupChat = userMapper.getGroupChat(groupId);
+        // 改群名
+        GroupChat groupChat = userMapper.getGroupChat(createGroupChatDTO.getGroupId());
         String memberIdsString = groupChat.getMemberIds();
         List<Long> memberIds = Arrays.stream(memberIdsString
                 .split(","))
                 .map(Long::parseLong)
                 .toList();
-        for (Long id : memberIds) {
-            if (id == groupChat.getOwnerId()) {
-                groupName += userMapper.getByUserId(id).getUsername();
-            } else {
-                groupName += "," + userMapper.getByUserId(id).getUsername();
-            }
-        }
-        userMapper.updateGroupName(groupId, groupName);
-
-        for (Long memberId : memberIds) {
+        String groupName = memberIds.stream()
+                .map(id -> userMapper.getByUserId(id).getUsername())
+                .collect(Collectors.joining(","));
+        userMapper.updateGroupName(createGroupChatDTO.getGroupId(), groupName);
+        String selectFriendIdsString = createGroupChatDTO.getSelectedFriends().stream()
+                .map(String::valueOf)
+                .collect(Collectors.joining(","));
+        List<Long> pushIds = new ArrayList<>(memberIds);
+        pushIds.addAll(createGroupChatDTO.getSelectedFriends());
+        for (Long pushId : pushIds) {
             // FCM
-            commonService.sendPush(memberId, BaseContext.getCurrentId(), "", "", "joingroup", true);
+            commonService.sendPush(pushId, BaseContext.getCurrentId(), "",
+                    selectFriendIdsString, "removememberfromgroup", true);
         }
     }
 

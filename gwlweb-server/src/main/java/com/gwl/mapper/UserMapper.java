@@ -144,12 +144,23 @@ public interface UserMapper {
     @Insert("insert into chatlist (user_id, friend_id ,isgroup) values (#{userId},#{friendId},#{isGroup})")
     void addFriendToChatList(AddFriendToChatListDTO addFriendToChatListDTO);
 
+     /**
+     * 从聊天列表里移除朋友或群
+     */
+    @Insert("delete from chatlist where user_id = #{userId} and friend_id=#{friendId} and isgroup = #{isGroup}")
+    void removeFriendFromChatList(AddFriendToChatListDTO addFriendToChatListDTO);
     /*
      * 添加群成员
      */
     @Insert("insert into group_members (group_id,user_id) values (#{groupId},#{userId})")
     Boolean addGroupMembers(Long groupId, Long userId);
-
+    
+    /**
+     * 移除群成员
+     * @param groupId
+     * @param userId
+     * @return
+     */
     @Insert("delete from group_members where group_id = #{groupId} and user_id = #{userId}")
     Boolean removeGroupMembers(Long groupId, Long userId);
 
