@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -207,15 +208,18 @@ public class TimelineServiceImpl implements TimelineService {
                 List<LikeUserVO> likeUserVOs = new ArrayList<>();
                 // 用户点赞数据
                 Integer likedByMeCount = 0;
+                log.info("BaseContext.getCurrentId():{}", BaseContext.getCurrentId());
                 for (Map.Entry<Long, Integer> entry : userLikeMap.entrySet()) {
                     Long userId = entry.getKey();
+                    log.info("userId:{}", userId);
                     Integer likeCount = entry.getValue();
                     LikeUserVO likeUserVO = LikeUserVO.builder()
                             .userId(userId)
                             .avatarUrl(redis.opsForValue().get("useravatarurl:" + userId))
                             .userLikeCount(likeCount)
                             .build();
-                    if (userId == BaseContext.getCurrentId()) {
+                    if (Objects.equals(userId, BaseContext.getCurrentId())) {
+                        log.info("likedByMe:{}", likedByMeCount);
                         likedByMeCount = likeCount;
                     }
                     likeUserVOs.add(likeUserVO);
@@ -313,6 +317,7 @@ public class TimelineServiceImpl implements TimelineService {
                         .build();
                 if (userId == BaseContext.getCurrentId()) {
                     likedByMeCount = likeCount;
+                    // log.info("likedByMe:{}", likedByMeCount);
                 }
                 likeUserVOs.add(likeUserVO);
             }
