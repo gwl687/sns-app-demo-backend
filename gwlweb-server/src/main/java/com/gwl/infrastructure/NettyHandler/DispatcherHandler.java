@@ -72,12 +72,12 @@ public class DispatcherHandler extends SimpleChannelInboundHandler<TextWebSocket
         long fromUser = ctx.channel().attr(ChannelManager.USER_ID).get();
         message.setFromUser(fromUser);
         String sendMessage = CommonUtil.mapper.writeValueAsString(message);
+        Channel toChannel = ChannelManager.userChannelMap.get(toUser);
         System.out.println("sendMessage=" + sendMessage);
         switch (type) {
             // 私聊
             case "private":
                 log.info("收到私聊消息: " + message.getContent());
-                Channel toChannel = ChannelManager.userChannelMap.get(toUser);
                 // 对方在线的话，长连接发消息
                 if (toChannel != null && toChannel.isActive()) {
                     toChannel.writeAndFlush(new TextWebSocketFrame(sendMessage));
@@ -96,7 +96,6 @@ public class DispatcherHandler extends SimpleChannelInboundHandler<TextWebSocket
                 log.info("groupMemberId={}", groupMemberIds);
                 for (Long groupMemberId : groupMemberIds) {
                     Channel toGroupMemberChannel = ChannelManager.userChannelMap.get(groupMemberId);
-                    // 对方在线的话，长连接发消息
                     if (toGroupMemberChannel != null && toGroupMemberChannel.isActive()) {
                         if (groupMemberId == fromUser) {
                             continue;
@@ -116,7 +115,22 @@ public class DispatcherHandler extends SimpleChannelInboundHandler<TextWebSocket
                 break;
             // 视频聊天请求
             case "videochatrequest":
+                if (toChannel != null && toChannel.isActive()) {
+                    toChannel.writeAndFlush(new TextWebSocketFrame(sendMessage));
+                }
                 commonService.sendPush(toUser, fromUser, "video chat request", content, "videochatrequest", false);
+                break;
+            // 视频聊天请求取消
+            case "videochatrequestcancel":
+                if (toChannel != null && toChannel.isActive()) {
+                    toChannel.writeAndFlush(new TextWebSocketFrame(sendMessage));
+                }
+                break;
+            //
+            case "videochatrequestresponse":
+                if (toChannel != null && toChannel.isActive()) {
+                    toChannel.writeAndFlush(new TextWebSocketFrame(sendMessage));
+                }
                 break;
             default:
                 break;

@@ -259,6 +259,7 @@ public class TimelineServiceImpl implements TimelineService {
                 // BaseContext.getCurrentId()));
             }
         }
+        log.info("获取到{}条timeline", timelineVOs.size());
         return timelineVOs;
     }
 

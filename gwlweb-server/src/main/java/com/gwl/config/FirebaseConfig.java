@@ -23,9 +23,8 @@ public class FirebaseConfig {
         if (!FirebaseApp.getApps().isEmpty()) {
             return;
         }
-        InputStream serviceAccount = new ClassPathResource(firebaseServiceAccountPath).getInputStream();
-        // InputStream serviceAccount = new
-        // ClassPathResource("firebase-app-local.json").getInputStream();
+        //InputStream serviceAccount = new ClassPathResource(firebaseServiceAccountPath).getInputStream();
+        InputStream serviceAccount = new FileInputStream(firebaseServiceAccountPath);
 
         FirebaseOptions options = FirebaseOptions.builder()
                 .setCredentials(GoogleCredentials.fromStream(serviceAccount))
