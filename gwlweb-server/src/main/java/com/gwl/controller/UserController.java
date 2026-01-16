@@ -1,4 +1,4 @@
-package com.gwl.controller.user;
+package com.gwl.controller;
 
 import java.io.IOException;
 import java.util.ArrayList;

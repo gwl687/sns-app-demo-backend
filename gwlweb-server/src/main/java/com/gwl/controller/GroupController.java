@@ -1,4 +1,4 @@
-package com.gwl.controller.friend;
+package com.gwl.controller;
 
 import java.util.Arrays;
 import java.util.List;

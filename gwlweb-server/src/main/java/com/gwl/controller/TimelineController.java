@@ -1,4 +1,4 @@
-package com.gwl.controller.timeline;
+package com.gwl.controller;
 
 import java.time.Instant;
 import java.time.LocalDateTime;

@@ -7,7 +7,7 @@ import lombok.Data;
 
 @Data
 @Builder
-public class UserInfoVO{
+public class UserInfoVO {
     private Long userId;
 
     private int sex;
@@ -19,4 +19,6 @@ public class UserInfoVO{
     private String avatarurl;
 
     private String emailaddress;
+
+    private List<String> interests;
 }
