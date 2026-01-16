@@ -6,6 +6,8 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 
+import com.gwl.pojo.vo.InterestVo;
+
 @Mapper
 public interface InterestMapper {
     /**
@@ -13,8 +15,8 @@ public interface InterestMapper {
      * 
      * @return
      */
-    @Select("select name from interest")
-    List<String> getAllInterests();
+    @Select("select * from interest")
+    List<InterestVo> getAllInterests();
 
     /**
      * 获取指定用户兴趣
