@@ -219,7 +219,6 @@ public class TimelineServiceImpl implements TimelineService {
                             .userLikeCount(likeCount)
                             .build();
                     if (Objects.equals(userId, BaseContext.getCurrentId())) {
-                        log.info("likedByMe:{}", likedByMeCount);
                         likedByMeCount = likeCount;
                     }
                     likeUserVOs.add(likeUserVO);

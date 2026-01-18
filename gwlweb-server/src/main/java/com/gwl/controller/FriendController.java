@@ -152,8 +152,8 @@ public class FriendController {
      * @return
      */
     @GetMapping(path = "/getrecommandedfriends", produces = "application/json")
-    @Operation(summary = "添加朋友到聊天列表")
-    Result<List<RecommendedFriendVO>> getRecommandedFriends() {
+    @Operation(summary = "获取推荐朋友")
+    Result<List<UserInfoVO>> getRecommandedFriends() {
         return Result.success(friendService.getRecommendedFriends());
     }
 }

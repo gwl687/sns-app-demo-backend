@@ -40,7 +40,7 @@
     SET
         username = #{username},
         age = #{age},
-        sex = #{sex},
+        sex = #{sex}
     WHERE id = #{id};
 
     DELETE FROM user_interest

@@ -93,6 +93,7 @@ public class UserController {
         UserInfoVO userInfoVO = UserInfoVO.builder()
                 .userId(user.getId())
                 .username(user.getUsername())
+                .age(user.getAge())
                 .sex(user.getSex())
                 .avatarurl(user.getAvatarurl())
                 .emailaddress(user.getEmailaddress())
@@ -108,7 +109,9 @@ public class UserController {
      * @return
      */
     @PostMapping(path = "/updateuserinfo", produces = "application/json")
-    Result<Void> updateUserInfo(UserInfoDTO userInfoDTO) {
+    Result<Void> updateUserInfo(@RequestBody UserInfoDTO userInfoDTO) {
+        log.info("updateUserInfo: {}", userInfoDTO);
+        userInfoDTO.setId(BaseContext.getCurrentId());
         userService.updateUserInfo(userInfoDTO);
         return Result.success();
     }

@@ -91,13 +91,13 @@ public class FriendServiceImpl implements FriendService {
      * 
      * @return
      */
-    public List<RecommendedFriendVO> getRecommendedFriends() {
-        List<RecommendedFriendVO> recommendedFriendVOs = new ArrayList<>();
+    public List<UserInfoVO> getRecommendedFriends() {
+        List<UserInfoVO> recommendedFriendVOs = new ArrayList<>();
         List<Long> recommandedFriendIds = friendMapper.getRecommendedFriendIds(BaseContext.getCurrentId());
         for (Long recommandedFriendId : recommandedFriendIds) {
             User friend = userMapper.getByUserId(recommandedFriendId);
-            List<String> interests = userMapper.getInterestsByUserId(recommandedFriendId);
-            RecommendedFriendVO recommendedFriendVO = RecommendedFriendVO.builder()
+            List<Long> interests = userMapper.getInterestsByUserId(recommandedFriendId);
+            UserInfoVO recommendedFriendVO = UserInfoVO.builder()
                     .userId(friend.getId())
                     .sex(friend.getSex())
                     .age(friend.getAge())

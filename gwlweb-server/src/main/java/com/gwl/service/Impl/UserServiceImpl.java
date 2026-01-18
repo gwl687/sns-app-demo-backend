@@ -137,6 +137,8 @@ public class UserServiceImpl implements UserService {
                 user = User.builder()
                         .emailaddress(email)
                         .username(userName)
+                        .age(18)
+                        .sex(1)
                         .status(1)
                         .avatarurl(BaseConstant.DEFAULTAVATARURL)
                         .build();
@@ -215,6 +217,8 @@ public class UserServiceImpl implements UserService {
         String userName = UUID.randomUUID().toString().replace("-", "").substring(0, 10);
         user = User.builder()
                 .emailaddress(registerDTO.getEmailaddress())
+                .age(18)
+                .sex(1)
                 .password(registerDTO.getPassword())
                 .username(userName)
                 .avatarurl(BaseConstant.DEFAULTAVATARURL)
