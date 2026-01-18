@@ -92,14 +92,7 @@ public interface UserMapper {
      * @param updateUserInfo
      * @return
      */
-    @Update("""
-            update test_user
-            set userName = #{username},
-                sex = #{sex},
-                avatarurl = #{avatarurl}
-                where id = #{id}
-            """)
-    public int updateUserInfo(UserInfoDTO userInfo);
+    void updateUserInfo(UserInfoDTO userInfo);
 
     /**
      * 获取指定ID的用户名
@@ -232,6 +225,6 @@ public interface UserMapper {
     @Insert("insert into friend_relation(user_id,friend_id,status) values (#{myId},#{friendId},2)")
     void sendFriendRequest(Long myId, Long friendId);
 
-    @Select("select i.name from user_interest ui join interest i on ui.interest_id = i.id where user_id =#{userId}")
-    List<String> getInterestsByUserId(Long userId);
+    @Select("select i.id from user_interest ui join interest i on ui.interest_id = i.id where user_id =#{userId}")
+    List<Long> getInterestsByUserId(Long userId);
 }

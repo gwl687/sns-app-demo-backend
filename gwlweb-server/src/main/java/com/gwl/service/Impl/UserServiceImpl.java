@@ -19,6 +19,7 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
@@ -32,6 +33,7 @@ import com.gwl.constant.StatusConstant;
 import com.gwl.context.BaseContext;
 import com.gwl.exception.BaseException;
 import com.gwl.mapper.FriendMapper;
+import com.gwl.mapper.InterestMapper;
 import com.gwl.mapper.UserMapper;
 import com.gwl.pojo.dto.AddFriendToChatListDTO;
 import com.gwl.pojo.dto.CreateGroupChatDTO;
@@ -61,6 +63,9 @@ import lombok.extern.slf4j.Slf4j;
 public class UserServiceImpl implements UserService {
     @Autowired
     private UserMapper userMapper;
+
+    @Autowired
+    private InterestMapper interestMapper;
 
     @Autowired
     private StringRedisTemplate stringRedis;
@@ -132,6 +137,8 @@ public class UserServiceImpl implements UserService {
                 user = User.builder()
                         .emailaddress(email)
                         .username(userName)
+                        .age(18)
+                        .sex(1)
                         .status(1)
                         .avatarurl(BaseConstant.DEFAULTAVATARURL)
                         .build();
@@ -210,6 +217,8 @@ public class UserServiceImpl implements UserService {
         String userName = UUID.randomUUID().toString().replace("-", "").substring(0, 10);
         user = User.builder()
                 .emailaddress(registerDTO.getEmailaddress())
+                .age(18)
+                .sex(1)
                 .password(registerDTO.getPassword())
                 .username(userName)
                 .avatarurl(BaseConstant.DEFAULTAVATARURL)
@@ -306,9 +315,10 @@ public class UserServiceImpl implements UserService {
      * 
      * @return
      */
-    public Boolean updateUserInfo(UserInfoDTO userInfoDTO) {
-        Boolean result = userMapper.updateUserInfo(userInfoDTO) > 0 ? true : false;
-        return result;
+    @Override
+    @Transactional
+    public void updateUserInfo(UserInfoDTO userInfoDTO) {
+        userMapper.updateUserInfo(userInfoDTO);
     }
 
     /*

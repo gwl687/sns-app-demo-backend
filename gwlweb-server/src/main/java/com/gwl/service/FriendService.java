@@ -3,6 +3,7 @@ package com.gwl.service;
 import java.util.List;
 import com.gwl.pojo.entity.User;
 import com.gwl.pojo.vo.RecommendedFriendVO;
+import com.gwl.pojo.vo.UserInfoVO;
 
 public interface FriendService {
 
@@ -43,5 +44,5 @@ public interface FriendService {
      * 获取推荐好友
      * @return
      */
-    List<RecommendedFriendVO> getRecommendedFriends();
+    List<UserInfoVO> getRecommendedFriends();
 }

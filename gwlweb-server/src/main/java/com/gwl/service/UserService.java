@@ -80,7 +80,7 @@ public interface UserService {
    * 
    * @return
    */
-  Boolean updateUserInfo(UserInfoDTO userInfoDTO);
+  void updateUserInfo(UserInfoDTO userInfoDTO);
 
   /**
    * 添加朋友或群到聊天列表

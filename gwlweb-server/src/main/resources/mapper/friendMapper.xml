@@ -29,34 +29,21 @@
     
     <!-- 获取推荐好友 -->
     <select id="getRecommendedFriendIds">
-        SELECT
-        ui2.user_id AS targetUserId
-            FROM user_interest ui1
-            JOIN user_interest ui2
-        ON ui1.interest = ui2.interest
-        AND ui1.user_id = #{userId}
-        AND ui2.user_id != #{userId}
-        JOIN (
-            SELECT user_id, COUNT(*) cnt
-            FROM user_interest
-            GROUP BY user_id
-        ) uic1 ON uic1.user_id = #{userId}
-        JOIN (
-            SELECT user_id, COUNT(*) cnt
-            FROM user_interest
-            GROUP BY user_id
-        ) uic2 ON uic2.user_id = ui2.user_id
-        WHERE NOT EXISTS (
-            SELECT 1
-            FROM friend f
-            WHERE f.user_id = #{userId}
-            AND f.friend_id = ui2.user_id
+        SELECT u.id
+        FROM test_user u
+        JOIN user_interest ui2
+            ON u.id = ui2.user_id
+        JOIN user_interest ui1
+            ON ui1.interest_id = ui2.interest_id
+            AND ui1.user_id = #{userId}
+        WHERE u.id != #{userId}
+            AND u.id NOT IN (
+            SELECT friend_id
+            FROM friend_relation
+            WHERE user_id = #{userId}
         )
-        AND uic2.cnt &gt; 0
-        GROUP BY ui2.user_id
-        ORDER BY COUNT(*) / SQRT(uic1.cnt * uic2.cnt) DESC
-        LIMIT 100;
+        GROUP BY u.id
+        ORDER BY COUNT(ui2.interest_id) DESC, ABS(u.age - #{age}) ASC
+        LIMIT 20
     </select>
-
-    
 </mapper>

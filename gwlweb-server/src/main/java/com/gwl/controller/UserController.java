@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import com.gwl.context.BaseContext;
+import com.gwl.mapper.InterestMapper;
 import com.gwl.mapper.UserMapper;
 import com.gwl.pojo.dto.GoogleLoginDto;
 import com.gwl.pojo.dto.RegisterDTO;
@@ -21,10 +22,12 @@ import com.gwl.pojo.dto.UserInfoDTO;
 import com.gwl.pojo.dto.UserLoginDTO;
 import com.gwl.pojo.entity.User;
 import com.gwl.pojo.vo.FriendListVO;
+import com.gwl.pojo.vo.InterestVo;
 import com.gwl.pojo.vo.UserInfoVO;
 import com.gwl.pojo.vo.UserLoginVO;
 import com.gwl.result.Result;
 import com.gwl.service.CommonService;
+import com.gwl.service.InterestService;
 import com.gwl.service.UserService;
 import com.gwl.util.JwtUtil;
 import io.swagger.v3.oas.annotations.Operation;
@@ -44,6 +47,10 @@ public class UserController {
     private CommonService commonService;
     @Autowired
     private UserMapper userMapper;
+    @Autowired
+    private InterestService interestService;
+    @Autowired
+    private InterestMapper interestMapper;
 
     /**
      * 用户登录相关
@@ -82,12 +89,15 @@ public class UserController {
     @GetMapping(path = "getuserinfo", produces = "application/json")
     Result<UserInfoVO> getUserInfo() {
         User user = userService.getUserInfo();
+        List<Long> interestVos = interestMapper.getUserInterests(BaseContext.getCurrentId());
         UserInfoVO userInfoVO = UserInfoVO.builder()
                 .userId(user.getId())
                 .username(user.getUsername())
+                .age(user.getAge())
                 .sex(user.getSex())
                 .avatarurl(user.getAvatarurl())
                 .emailaddress(user.getEmailaddress())
+                .interests(interestVos)
                 .build();
         return Result.success(userInfoVO);
     }
@@ -99,8 +109,11 @@ public class UserController {
      * @return
      */
     @PostMapping(path = "/updateuserinfo", produces = "application/json")
-    Result<Boolean> updateUserInfo(UserInfoDTO userInfoDTO) {
-        return Result.success(userService.updateUserInfo(userInfoDTO));
+    Result<Void> updateUserInfo(@RequestBody UserInfoDTO userInfoDTO) {
+        log.info("updateUserInfo: {}", userInfoDTO);
+        userInfoDTO.setId(BaseContext.getCurrentId());
+        userService.updateUserInfo(userInfoDTO);
+        return Result.success();
     }
 
     /**

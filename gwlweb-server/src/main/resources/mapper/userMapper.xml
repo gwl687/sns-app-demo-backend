@@ -34,4 +34,26 @@
     test_user u LEFT JOIN friend_relation fr ON fr.user_id = #{userId} AND fr.friend_id = u.id WHERE
     u.id != #{userId} AND ( u.id = #{keyword} OR u.username LIKE CONCAT('%', #{keyword}, '%') ) AND
     (fr.status IS NULL OR fr.status != 1) ORDER BY u.create_time DESC LIMIT 10 </select>
+  <!-- 更新用户信息 -->
+  <update id="updateUserInfo" parameterType="com.gwl.pojo.dto.UserInfoDTO">
+    UPDATE test_user
+    SET
+        username = #{username},
+        age = #{age},
+        sex = #{sex}
+    WHERE id = #{id};
+
+    DELETE FROM user_interest
+    WHERE user_id = #{id};
+
+    <if test="interests != null and interests.size() > 0">
+        INSERT INTO user_interest (user_id, interest_id)
+        VALUES
+        <foreach collection="interests"
+                 item="interestId"
+                 separator=",">
+            (#{id}, #{interestId})
+        </foreach>
+    </if>
+</update>
 </mapper>
