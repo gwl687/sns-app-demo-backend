@@ -24,8 +24,8 @@ public interface InterestMapper {
      * @param userId
      * @return
      */
-    @Select("select i.name from user_interest ui join interest i on ui.interest_id=i.id where ui.user_id = #{userId}")
-    List<String> getUserInterests(Long userId);
+    @Select("select i.id from user_interest ui join interest i on ui.interest_id=i.id where ui.user_id = #{userId}")
+    List<Long> getUserInterests(Long userId);
 
     /**
      * 删除用户兴趣

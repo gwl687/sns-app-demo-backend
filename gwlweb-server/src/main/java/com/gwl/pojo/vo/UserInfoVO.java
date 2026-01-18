@@ -20,5 +20,5 @@ public class UserInfoVO {
 
     private String emailaddress;
 
-    private List<String> interests;
+    private List<Long> interests;
 }

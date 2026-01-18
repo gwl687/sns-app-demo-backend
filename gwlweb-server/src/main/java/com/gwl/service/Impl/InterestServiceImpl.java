@@ -3,6 +3,8 @@ package com.gwl.service.Impl;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.gwl.context.BaseContext;
 import com.gwl.mapper.InterestMapper;
 import com.gwl.service.InterestService;
@@ -20,7 +22,9 @@ public class InterestServiceImpl implements InterestService {
      * @return
      */
     @Override
+    @Transactional
     public void updateUserInterests(List<Long> InterestIds) {
+        interestMapper.deleteUserInterests(BaseContext.getCurrentId());
         interestMapper.updateUserInterests(BaseContext.getCurrentId(), InterestIds);
     }
 }

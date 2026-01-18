@@ -7,7 +7,6 @@ import org.springframework.boot.autoconfigure.amqp.RabbitProperties.BaseContaine
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
 import com.gwl.context.BaseContext;
 import com.gwl.mapper.InterestMapper;
 import com.gwl.pojo.vo.InterestVo;

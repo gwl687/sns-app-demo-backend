@@ -92,14 +92,7 @@ public interface UserMapper {
      * @param updateUserInfo
      * @return
      */
-    @Update("""
-            update test_user
-            set userName = #{username},
-                sex = #{sex},
-                avatarurl = #{avatarurl}
-                where id = #{id}
-            """)
-    public int updateUserInfo(UserInfoDTO userInfo);
+    void updateUserInfo(UserInfoDTO userInfo);
 
     /**
      * 获取指定ID的用户名
